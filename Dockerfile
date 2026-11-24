@@ -17,6 +17,7 @@ ENV NODE_ENV=production \
 # Keep git inside Railway's small memory limits (index-pack and repack threads).
 COPY gitconfig /etc/gitconfig
 COPY railway-start.sh /usr/local/bin/railway-start.sh
+COPY seed-llm.ts /opt/railway/seed-llm.ts
 RUN chmod 755 /usr/local/bin/railway-start.sh && chmod 644 /etc/gitconfig
 
 EXPOSE 5003

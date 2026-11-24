@@ -57,6 +57,13 @@ chown node:node "$data_root" "$WORKSPACE_PATH" "$(dirname "$DATABASE_PATH")"
 mkdir -p "$data_root/opencode-bin"; chown node:node "$data_root/opencode-bin"
 if [ ! -L /home/node/.opencode/bin ]; then rm -r /home/node/.opencode/bin 2>/dev/null || true; ln -s "$data_root/opencode-bin" /home/node/.opencode/bin; fi
 
+# Optional: wire LLM_API_KEY / LLM_BASE_URL / LLM_MODEL into OpenCode's config.
+if [ -n "${LLM_API_KEY:-}" ]; then
+  runuser -u node -- env HOME=/home/node /usr/local/bin/bun /opt/railway/seed-llm.ts || echo "railway-start: could not write the LLM provider config; set it in Settings instead" >&2
+else
+  unset LLM_API_KEY LLM_BASE_URL LLM_MODEL
+fi
+
 echo "railway-start: OpenCode Manager on port ${PORT}, origin ${AUTH_TRUSTED_ORIGINS}, data in ${data_root}, ${cpus} CPU(s)"
 
 # 6. Upstream entrypoint: installs nothing new (OpenCode is bundled), aligns the
